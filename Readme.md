@@ -1,4 +1,4 @@
-# Личный проект «Киноман» [![Build status][travis-image]][travis-url]
+# Личный проект «Менеджер задач» [![Build status][travis-image]][travis-url]
 
 * Студент: [Михаил  Поданев](https://up.htmlacademy.ru/ecmascript/8/user/63947).
 * Наставник: [Евгений Фаллер](https://htmlacademy.ru/profile/id505933).
@@ -48,5 +48,5 @@ git clone SSH-адрес_вашего_форка
 
 Репозиторий создан для обучения на интенсивном онлайн‑курсе «[Профессиональный JavaScript, уровень 2](https://htmlacademy.ru/intensive/ecmascript)» от [HTML Academy](https://htmlacademy.ru).
 
-[travis-image]: https://travis-ci.com/htmlacademy-ecmascript/63947-cinemaddict-8.svg?branch=master
-[travis-url]: https://travis-ci.com/htmlacademy-ecmascript/63947-cinemaddict-8
+[travis-image]: https://travis-ci.com/htmlacademy-ecmascript/63947-taskmanager-8.svg?branch=master
+[travis-url]: https://travis-ci.com/htmlacademy-ecmascript/63947-taskmanager-8
