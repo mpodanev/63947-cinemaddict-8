@@ -10,7 +10,7 @@ module.exports = {
   devtool: `source-map`, // Подключаем sourcemaps
   devServer: {
     contentBase: path.join(__dirname, `public`), // Где искать сборку
-    publicPath: 'http: //localhost:8080/', // Веб адрес сборки
+    publicPath: `http://localhost:8080/`, // Веб адрес сборки
     hot: true, // Автоматическая перезагрузка страницы
     compress: true // Сжатие
   }
