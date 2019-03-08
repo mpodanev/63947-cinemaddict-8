@@ -1,6 +1,6 @@
 import getRandomInteger from './utils';
 
-export default () => ({
+export default {
   title: [
     `The Shawshank Redemption`,
     `The Green Mile`,
@@ -35,4 +35,4 @@ export default () => ({
   duration: `1h&nbsp;${getRandomInteger(1, 59)}m`,
   genre: `Comedy`,
   comments: `${getRandomInteger(0, 19)}&nbsp;comments`,
-});
+};
