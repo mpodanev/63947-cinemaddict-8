@@ -1,6 +1,4 @@
 import createElement from './create-element';
-import FilmPopup from './fimlPopup';
-import film from './film-data';
 
 export default class Film {
   constructor(data) {
@@ -14,11 +12,24 @@ export default class Film {
     this._comments = data.comments;
 
     this._element = null;
+
+    this.state = {};
+
+    this._onComment = null;
   }
 
-  _openPopup() {
-    const firstFilmPopup = new FilmPopup(film);
-    firstFilmPopup.render(document.body);
+  _onCommentButtonClick() {
+    if (typeof this._onComment === `function`) {
+      this._onComment();
+    }
+  }
+
+  get element() {
+    return this._element;
+  }
+
+  set onComment(fn) {
+    this._onComment = fn;
   }
 
   get template() {
@@ -46,18 +57,22 @@ export default class Film {
   }
 
   bind() {
-    this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._openPopup.bind(this));
+    this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentButtonClick.bind(this));
   }
 
-  render(container) {
-    if (this._element) {
-      container.removeChild(this._element);
-      this._element = null;
-    }
-
+  render() {
     this._element = createElement(this.template);
-    container.appendChild(this._element);
-
     this.bind();
+    return this._element;
   }
+
+  unbind() {
+    this._element.querySelector(`.film-card__comments`).removeEventListener(`click`, this._onCommentButtonClick.bind(this));
+  }
+
+  unrender() {
+    this.unbind();
+    this._element = null;
+  }
+
 }

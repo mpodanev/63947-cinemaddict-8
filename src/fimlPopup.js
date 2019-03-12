@@ -12,10 +12,21 @@ export default class FilmPopup {
     this._comments = data.comments;
 
     this._element = null;
+    this._onClose = null;
   }
 
-  _closePopup() {
-    this.remove(document.body);
+  _onCloseButtonClick() {
+    if (typeof this._onClose === `function`) {
+      this._onClose();
+    }
+  }
+
+  set onClose(fn) {
+    this._onClose = fn;
+  }
+
+  get element() {
+    return this._element;
   }
 
   get template() {
@@ -186,23 +197,26 @@ export default class FilmPopup {
   `;
   }
 
-  bind() {
-    this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closePopup.bind(this));
-  }
-
-  render(container) {
-    this._element = createElement(this.template);
-    container.appendChild(this._element);
-
-    this.bind();
-  }
-
-  remove(container) {
-    if (this._element) {
-      container.removeChild(this._element);
-      this._element = null;
+  render() {
+    if (!this._element) {
+      this._element = createElement(this.template);
+      this.bind();
     }
+    return this._element;
   }
+
+  unrender(container) {
+    this.unbind();
+    container.removeChild(this._element);
+    this._element = null;
+  }
+
+  bind() {
+    this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick.bind(this));
+  }
+
+  unbind() {
+    this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick.bind(this));
+  }
+
 }
-
-

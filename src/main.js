@@ -2,10 +2,11 @@ import makeFilter from './make-filter';
 import film from './film-data';
 import filters from './configs';
 import Film from './film';
+import FilmPopup from './fimlPopup';
 
 const mainNavigation = document.querySelector(`.main-navigation`);
 const allMoviesContainer = document.querySelector(`.films-list__container--all-movies`);
-const topRatedContainer = document.querySelector(`.films-list__container--top-rated`);
+// const topRatedContainer = document.querySelector(`.films-list__container--top-rated`);
 
 const addFilters = (enterEltment, filtersArr) => {
   let counter = 0;
@@ -21,7 +22,15 @@ const addFilters = (enterEltment, filtersArr) => {
 
 addFilters(mainNavigation, filters, 0);
 
-const firstFilm = new Film(film);
-firstFilm.render(allMoviesContainer);
-const secondFilm = new Film(film);
-secondFilm.render(topRatedContainer);
+const filmComponent = new Film(film);
+const popupFilmComponent = new FilmPopup(film);
+
+allMoviesContainer.appendChild(filmComponent.render());
+
+filmComponent.onComment = () => {
+  document.body.appendChild(popupFilmComponent.render());
+};
+
+popupFilmComponent.onClose = () => {
+  popupFilmComponent.unrender(document.body);
+};
