@@ -1,7 +1,8 @@
-import createElement from './create-element';
+import Component from './component';
 
-export default class FilmPopup {
+export default class FilmPopup extends Component {
   constructor(data) {
+    super();
     this._title = data.title;
     this._image = data.image;
     this._description = data.description;
@@ -11,8 +12,9 @@ export default class FilmPopup {
     this._genre = data.genre;
     this._comments = data.comments;
 
-    this._element = null;
     this._onClose = null;
+
+    this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
   }
 
   _onCloseButtonClick() {
@@ -23,10 +25,6 @@ export default class FilmPopup {
 
   set onClose(fn) {
     this._onClose = fn;
-  }
-
-  get element() {
-    return this._element;
   }
 
   get template() {
@@ -197,26 +195,12 @@ export default class FilmPopup {
   `;
   }
 
-  render() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-      this.bind();
-    }
-    return this._element;
-  }
-
-  unrender(container) {
-    this.unbind();
-    container.removeChild(this._element);
-    this._element = null;
-  }
-
   bind() {
-    this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick.bind(this));
+    this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick);
   }
 
   unbind() {
-    this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick.bind(this));
+    this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick);
   }
 
 }

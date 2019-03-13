@@ -1,7 +1,8 @@
-import createElement from './create-element';
+import Component from './component';
 
-export default class Film {
+export default class Film extends Component {
   constructor(data) {
+    super();
     this._title = data.title;
     this._image = data.image;
     this._description = data.description;
@@ -11,21 +12,15 @@ export default class Film {
     this._genre = data.genre;
     this._comments = data.comments;
 
-    this._element = null;
-
-    this.state = {};
-
     this._onComment = null;
+
+    this._onCommentButtonClick = this._onCommentButtonClick.bind(this);
   }
 
   _onCommentButtonClick() {
     if (typeof this._onComment === `function`) {
       this._onComment();
     }
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onComment(fn) {
@@ -57,22 +52,11 @@ export default class Film {
   }
 
   bind() {
-    this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentButtonClick.bind(this));
-  }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
+    this._element.querySelector(`.film-card__comments`).addEventListener(`click`, this._onCommentButtonClick);
   }
 
   unbind() {
-    this._element.querySelector(`.film-card__comments`).removeEventListener(`click`, this._onCommentButtonClick.bind(this));
-  }
-
-  unrender() {
-    this.unbind();
-    this._element = null;
+    this._element.querySelector(`.film-card__comments`).removeEventListener(`click`, this._onCommentButtonClick);
   }
 
 }
