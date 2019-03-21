@@ -38,7 +38,7 @@ export default class FilmPopup extends Component {
     this.update(newData);
   }
 
-  _processForm(formData) {
+  _processForm() {
     const entry = {
       comments: this._comments,
       userRating: this._userRating,
