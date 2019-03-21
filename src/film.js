@@ -1,16 +1,17 @@
 import Component from './component';
+import moment from 'moment';
 
 export default class Film extends Component {
-  constructor(data) {
+  constructor({title, image, description, rating, year, duration, genre, comments}) {
     super();
-    this._title = data.title;
-    this._image = data.image;
-    this._description = data.description;
-    this._rating = data.rating;
-    this._year = data.year;
-    this._duration = data.duration;
-    this._genre = data.genre;
-    this._comments = data.comments;
+    this._title = title;
+    this._image = image;
+    this._description = description;
+    this._rating = rating;
+    this._year = year;
+    this._duration = duration;
+    this._genre = genre;
+    this._commentsCount = comments.length;
 
     this._onComment = null;
 
@@ -32,13 +33,13 @@ export default class Film extends Component {
     <h3 class="film-card__title">${this._title}</h3>
     <p class="film-card__rating">${this._rating}</p>
     <p class="film-card__info">
-      <span class="film-card__year">${this._year}</span>
-      <span class="film-card__duration">${this._duration}</span>
+      <span class="film-card__year">${moment(this._year).format(`YYYY`)}</span>
+      <span class="film-card__duration">${moment.duration(this._duration).hours()}h ${moment.duration(this._duration - moment.duration(this._duration).hours()).minutes()}m</span>
       <span class="film-card__genre">${this._genre}</span>
     </p>
     <img src="${this._image}" alt="" class="film-card__poster">
     <p class="film-card__description">${this._description}</p>
-    <button class="film-card__comments">${this._comments}</button>
+    <button class="film-card__comments">${this._commentsCount} comments</button>
 
     <form class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">
@@ -57,6 +58,11 @@ export default class Film extends Component {
 
   unbind() {
     this._element.querySelector(`.film-card__comments`).removeEventListener(`click`, this._onCommentButtonClick);
+  }
+
+  update({rating, comments}) {
+    this._rating = rating;
+    this._commentsCount = comments.length;
   }
 
 }

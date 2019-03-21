@@ -1,34 +1,125 @@
 import Component from './component';
+import moment from 'moment';
 
 export default class FilmPopup extends Component {
-  constructor(data) {
+  constructor({title, image, description, rating, year, duration, genre, comments, isAnimate, ratings, userRating}) {
     super();
-    this._title = data.title;
-    this._image = data.image;
-    this._description = data.description;
-    this._rating = data.rating;
-    this._year = data.year;
-    this._duration = data.duration;
-    this._genre = data.genre;
-    this._comments = data.comments;
+    this._title = title;
+    this._image = image;
+    this._description = description;
+    this._rating = rating;
+    this._year = year;
+    this._duration = duration;
+    this._genre = genre;
+    this._comments = comments;
+    this._ratings = ratings;
+    this._isAnimate = isAnimate;
+    this._userRating = userRating;
 
     this._onClose = null;
-
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
+
+    this._changeRating = null;
+    this._onChangeRating = this._onChangeRating.bind(this);
+
+    this._onAddComment = this._onAddComment.bind(this);
   }
+
 
   _onCloseButtonClick() {
+    this._isAnimate = true;
+    const formData = new FormData(this._element.querySelector(`.film-details__inner`));
+    const newData = this._processForm(formData);
+
     if (typeof this._onClose === `function`) {
-      this._onClose();
+      this._onClose(newData);
+    }
+
+    this.update(newData);
+  }
+
+  _processForm(formData) {
+    const entry = {
+      comments: this._comments,
+      userRating: this._userRating,
+    };
+
+    return entry;
+  }
+
+  _onAddComment(evt) {
+    if (evt.ctrlKey || evt.metaKey && evt.keyCode === 13) {
+      evt.preventDefault();
+      const newComment = {};
+      const message = this._element.querySelector(`.film-details__comment-input`);
+      newComment.text = message.value;
+      newComment.author = `Some author`;
+      newComment.emoji = this._element.querySelector(`.film-details__emoji-item:checked + label`).textContent;
+      newComment.date = moment();
+
+      this._comments.push(newComment);
+      message.value = ``;
+      this._element.querySelector(`.film-details__add-emoji`).checked = false;
+      this._isAnimate = false;
+
+      this.unbind();
+      this._partialUpdate();
+      this.bind();
     }
   }
+
+  _getCommentsTemplate() {
+    return this._comments.map((comment) => `<li class="film-details__comment">
+          <span class="film-details__comment-emoji">${comment.emoji}</span>
+          <div>
+            <p class="film-details__comment-text">${comment.text}</p>
+            <p class="film-details__comment-info">
+              <span class="film-details__comment-author">${comment.author}</span>
+              <span class="film-details__comment-day">${moment(comment.date).fromNow()}</span>
+            </p>
+          </div>
+        </li>`).join(``);
+  }
+
+  _getRatingTamplate() {
+    return this._ratings.map((rating) => `<input
+      type="radio"
+      name="score"
+      class="film-details__user-rating-input visually-hidden"
+      value="${rating.number}"
+      id="rating-${rating.number}"
+      ${rating.isChecked ? `checked` : ``}>
+    <label class="film-details__user-rating-label" for="rating-${rating.number}">${rating.number}</label>`).join(``);
+  }
+
+  _onChangeRating(evt) {
+    if (evt.target.classList.contains(`film-details__user-rating-label`)) {
+      const index = evt.target.innerText;
+      this._userRating = index;
+      this._ratings.forEach((rating) => {
+        rating.isChecked = false;
+      });
+      this._ratings[index - 1].isChecked = true;
+
+      this._isAnimate = false;
+
+      this.unbind();
+      this._partialUpdate();
+      this.bind();
+    }
+  }
+
+  _partialUpdate() {
+    this._element.innerHTML = this.template;
+  }
+
 
   set onClose(fn) {
     this._onClose = fn;
   }
 
   get template() {
-    return `<section class="film-details">
+    return `<section class="film-details ${this._isAnimate ? `film-details--animate` : ``}">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__close">
         <button class="film-details__close-btn" type="button">close</button>
@@ -49,7 +140,7 @@ export default class FilmPopup extends Component {
 
             <div class="film-details__rating">
               <p class="film-details__total-rating">${this._rating}</p>
-              <p class="film-details__user-rating">Your rate 8</p>
+              <p class="film-details__user-rating">${this._userRating ? `Your rate ${this._userRating}` : ``}</p>
             </div>
           </div>
 
@@ -68,11 +159,11 @@ export default class FilmPopup extends Component {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">15 June 2018 (USA)</td>
+              <td class="film-details__cell">${moment(this._year).format(`D MMM YYYY`)} (USA)</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">118 min</td>
+              <td class="film-details__cell">${moment.duration(this._duration).asMinutes()} min</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -81,9 +172,7 @@ export default class FilmPopup extends Component {
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">Animation</span>
-                <span class="film-details__genre">Action</span>
-                <span class="film-details__genre">Adventure</span></td>
+                <span class="film-details__genre">${this._genre}</span>
             </tr>
           </table>
 
@@ -105,19 +194,10 @@ export default class FilmPopup extends Component {
       </section>
 
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">1</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._comments.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">😴</span>
-            <div>
-              <p class="film-details__comment-text">So long-long story, boring!</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">Tim Macoveev</span>
-                <span class="film-details__comment-day">3 days ago</span>
-              </p>
-            </div>
-          </li>
+          ${this._getCommentsTemplate()}
         </ul>
 
         <div class="film-details__new-comment">
@@ -159,33 +239,7 @@ export default class FilmPopup extends Component {
             <p class="film-details__user-rating-feelings">How you feel it?</p>
 
             <div class="film-details__user-rating-score">
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="1" id="rating-1">
-              <label class="film-details__user-rating-label" for="rating-1">1</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="2" id="rating-2">
-              <label class="film-details__user-rating-label" for="rating-2">2</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="3" id="rating-3">
-              <label class="film-details__user-rating-label" for="rating-3">3</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="4" id="rating-4">
-              <label class="film-details__user-rating-label" for="rating-4">4</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="5" id="rating-5" checked>
-              <label class="film-details__user-rating-label" for="rating-5">5</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="6" id="rating-6">
-              <label class="film-details__user-rating-label" for="rating-6">6</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="7" id="rating-7">
-              <label class="film-details__user-rating-label" for="rating-7">7</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
-              <label class="film-details__user-rating-label" for="rating-8">8</label>
-
-              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9">
-              <label class="film-details__user-rating-label" for="rating-9">9</label>
-
+              ${this._getRatingTamplate()}
             </div>
           </section>
         </div>
@@ -197,10 +251,19 @@ export default class FilmPopup extends Component {
 
   bind() {
     this._element.querySelector(`.film-details__close-btn`).addEventListener(`click`, this._onCloseButtonClick);
+    this._element.querySelector(`.film-details__user-rating-score`).addEventListener(`click`, this._onChangeRating);
+    this._element.querySelector(`.film-details__comment-input`).addEventListener(`keydown`, this._onAddComment);
   }
 
   unbind() {
     this._element.querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._onCloseButtonClick);
+    this._element.querySelector(`.film-details__user-rating-score`).removeEventListener(`click`, this._onChangeRating);
+    this._element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._onAddComment);
+  }
+
+  update({comments, userRating}) {
+    this._comments = comments;
+    this._userRating = userRating;
   }
 
 }

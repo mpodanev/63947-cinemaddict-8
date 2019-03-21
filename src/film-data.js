@@ -1,4 +1,6 @@
 import getRandomInteger from './utils';
+import moment from 'moment';
+
 
 export default {
   title: [
@@ -31,8 +33,59 @@ export default {
     `Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus.`,
     `In rutrum ac purus sit amet tempus.`][Math.floor(Math.random() * 6)],
   rating: `${getRandomInteger(1, 9)}.${getRandomInteger(0, 9)}`,
-  year: `${getRandomInteger(1950, 2019)}`,
-  duration: `1h&nbsp;${getRandomInteger(1, 59)}m`,
+  year: Date.now() - getRandomInteger(0, 50) * 60 * 60 * 24 * 365 * 1000,
+  duration: getRandomInteger(60, 120) * 60 * 1000,
   genre: `Comedy`,
-  comments: `${getRandomInteger(0, 19)}&nbsp;comments`,
+  comments: [
+    {
+      text: `So long-long story, boring!`,
+      author: `Tim Macoveev`,
+      emoji: `😴`,
+      date: moment()
+    }
+  ],
+  isAnimate: true,
+  ratings: [
+    {
+      number: 1,
+      isChecked: false
+    },
+    {
+      number: 2,
+      isChecked: false
+    },
+    {
+      number: 3,
+      isChecked: false
+    },
+    {
+      number: 4,
+      isChecked: false
+    },
+    {
+      number: 5,
+      isChecked: false
+    },
+    {
+      number: 6,
+      isChecked: false
+    },
+    {
+      number: 7,
+      isChecked: false
+    },
+    {
+      number: 8,
+      isChecked: false
+    },
+    {
+      number: 9,
+      isChecked: false
+    },
+    {
+      number: 10,
+      isChecked: false
+    }
+  ],
+  userRating: 0
 };
