@@ -6,7 +6,6 @@ import FilmPopup from './fimlPopup';
 
 const mainNavigation = document.querySelector(`.main-navigation`);
 const allMoviesContainer = document.querySelector(`.films-list__container--all-movies`);
-// const topRatedContainer = document.querySelector(`.films-list__container--top-rated`);
 
 const addFilters = (enterEltment, filtersArr) => {
   let counter = 0;
@@ -28,9 +27,15 @@ const popupFilmComponent = new FilmPopup(film);
 allMoviesContainer.appendChild(filmComponent.render());
 
 filmComponent.onComment = () => {
-  document.body.appendChild(popupFilmComponent.render());
+  const template = popupFilmComponent.render();
+  document.body.appendChild(template);
 };
 
-popupFilmComponent.onClose = () => {
+popupFilmComponent.onClose = (newObject) => {
+  filmComponent.update(Object.assign(film, newObject));
+  filmComponent.unrender();
+  allMoviesContainer.appendChild(filmComponent.render());
+
   popupFilmComponent.unrender(document.body);
 };
+
