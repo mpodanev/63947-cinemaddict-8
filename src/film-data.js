@@ -2,8 +2,8 @@ import getRandomInteger from './utils';
 import moment from 'moment';
 
 
-export default {
-  title: [
+export default () => {
+  return {title: [
     `The Shawshank Redemption`,
     `The Green Mile`,
     `Forrest Gump`,
@@ -35,7 +35,7 @@ export default {
   rating: `${getRandomInteger(1, 9)}.${getRandomInteger(0, 9)}`,
   year: Date.now() - getRandomInteger(0, 50) * 60 * 60 * 24 * 365 * 1000,
   duration: getRandomInteger(60, 120) * 60 * 1000,
-  genre: `Comedy`,
+  genre: [`Sci-Fi`, `Animation`, `Fantasy`, `Comedy`, `TV Series`][Math.floor(Math.random() * 5)],
   comments: [
     {
       text: `So long-long story, boring!`,
@@ -87,5 +87,9 @@ export default {
       isChecked: false
     }
   ],
-  userRating: 0
+  userRating: 0,
+  isWatchList: getRandomInteger(0, 1),
+  isWatched: getRandomInteger(0, 1),
+  isFavorite: getRandomInteger(0, 1),
+  };
 };

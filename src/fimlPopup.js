@@ -2,7 +2,7 @@ import Component from './component';
 import moment from 'moment';
 
 export default class FilmPopup extends Component {
-  constructor({title, image, description, rating, year, duration, genre, comments, isAnimate, ratings, userRating}) {
+  constructor({title, image, description, rating, year, duration, genre, comments, isAnimate, ratings, userRating, isWatchList, isWatched, isFavorite}) {
     super();
     this._title = title;
     this._image = image;
@@ -15,6 +15,9 @@ export default class FilmPopup extends Component {
     this._ratings = ratings;
     this._isAnimate = isAnimate;
     this._userRating = userRating;
+    this._isWatchList = isWatchList;
+    this._isWatched = isWatched;
+    this._isFavorite = isFavorite;
 
     this._onClose = null;
     this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
@@ -24,7 +27,6 @@ export default class FilmPopup extends Component {
 
     this._onAddComment = this._onAddComment.bind(this);
   }
-
 
   _onCloseButtonClick() {
     this._isAnimate = true;
@@ -183,13 +185,13 @@ export default class FilmPopup extends Component {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${this._isWatchList ? `checked` : ``}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" checked>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${this._isWatched ? `checked` : ``}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
 
@@ -261,9 +263,12 @@ export default class FilmPopup extends Component {
     this._element.querySelector(`.film-details__comment-input`).removeEventListener(`keydown`, this._onAddComment);
   }
 
-  update({comments, userRating}) {
+  update({comments, userRating, isWatchList, isWatched, isFavorite}) {
     this._comments = comments;
     this._userRating = userRating;
+    this._isWatchList = isWatchList;
+    this._isWatched = isWatched;
+    this._isFavorite = isFavorite;
   }
 
 }
