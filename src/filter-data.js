@@ -2,25 +2,25 @@ export default [
   {
     link: `#all`,
     className: `main-navigation__item main-navigation__item--active`,
-    title: `All movies`
+    title: `All movies`,
   },
   {
     link: `#watchlist`,
     className: `main-navigation__item`,
     title: `Watchlist`,
-    count: 13
+    count: 0
   },
   {
     link: `#history`,
     className: `main-navigation__item`,
     title: `History`,
-    count: 4
+    count: 0
   },
   {
     link: `#favorites`,
     className: `main-navigation__item`,
     title: `Favorites`,
-    count: 8
+    count: 0
   },
   {
     link: `#stats`,
