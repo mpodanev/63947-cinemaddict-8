@@ -3,11 +3,12 @@ import filters from "./filter-data";
 import Film from "./film";
 import FilmPopup from "./fimlPopup";
 import Filter from "./filter";
-import {chart, statisticTemplate, statisticElement} from './statistic';
+import Statistic from './statistic';
 
 const mainNavigation = document.querySelector(`.main-navigation`);
-const mainContainer = document.querySelector(`.main`);
 const allMoviesContainer = document.querySelector(`.films-list__container--all-movies`);
+const topRatedContainer = document.querySelector(`.films-list__container--top-rated`);
+const mostCommentedContainer = document.querySelector(`.films-list__container--most-commented`);
 const filmsContainer = document.querySelector(`.films`);
 
 const getFilmsData = (count) => {
@@ -18,7 +19,9 @@ const getFilmsData = (count) => {
   return filmsArr;
 };
 
-const filmsData = getFilmsData(7);
+const mainFilmsData = getFilmsData(7);
+const topRatedFilmsData = getFilmsData(2);
+const mostCommentedFilmsData = getFilmsData(2);
 
 const filterFilms = (films, filterName) => {
   let filteredFilms = [];
@@ -41,9 +44,6 @@ const filterFilms = (films, filterName) => {
   return filteredFilms;
 };
 
-mainContainer.appendChild(statisticElement(statisticTemplate(filterFilms(filmsData, `History`))));
-
-const statisticCtx = document.querySelector(`.statistic__chart`);
 const statisticContainer = document.querySelector(`.statistic`);
 
 const renderFilters = (enterEltment, filtersArr) => {
@@ -53,12 +53,11 @@ const renderFilters = (enterEltment, filtersArr) => {
     const filterComponent = new Filter(filter);
 
     filterComponent.onFilter = () => {
-      const filteredFilms = filterFilms(filmsData, filterComponent._title);
+      const filteredFilms = filterFilms(mainFilmsData, filterComponent._title);
       renderFilms(filteredFilms, allMoviesContainer);
       if (filter.title === `Stats`) {
         filmsContainer.classList.add(`visually-hidden`);
         statisticContainer.classList.remove(`visually-hidden`);
-        chart(statisticCtx, filmsData);
       } else {
         filmsContainer.classList.remove(`visually-hidden`);
         statisticContainer.classList.add(`visually-hidden`);
@@ -75,12 +74,6 @@ const renderFilms = (films, container) => {
   container.innerHTML = ``;
   films.forEach((film) => {
     const filmComponent = new Film(film);
-    const popupFilmComponent = new FilmPopup(film);
-
-    filmComponent.onComment = () => {
-      const template = popupFilmComponent.render();
-      document.body.appendChild(template);
-    };
 
     filmComponent.onAddToWatchList = () => {
       film.isWatchList = !film.isWatchList;
@@ -103,16 +96,36 @@ const renderFilms = (films, container) => {
       filmComponent.bind();
     };
 
-    popupFilmComponent.onClose = (newObject) => {
-      filmComponent.unbind();
-      filmComponent.update(Object.assign(filmItem, newObject));
-      filmComponent.bind();
+    filmComponent.onComment = () => {
+      const popupFilmComponent = new FilmPopup(film);
+      const template = popupFilmComponent.render();
+      document.body.appendChild(template);
 
-      popupFilmComponent.unrender(document.body);
+      popupFilmComponent.onClose = (newObject) => {
+        filmComponent.unbind();
+        filmComponent.update(Object.assign(film, newObject));
+        filmComponent.bind();
+
+        popupFilmComponent.unrender(document.body);
+      };
     };
+
 
     container.appendChild(filmComponent.render());
   });
 };
 
-renderFilms(filmsData, allMoviesContainer);
+renderFilms(mainFilmsData, allMoviesContainer);
+renderFilms(topRatedFilmsData, topRatedContainer);
+renderFilms(mostCommentedFilmsData, mostCommentedContainer);
+
+const showStatistic = () => {
+  statisticContainer.innerHTML = ``;
+  // filmsWrapper.classList.add(HIDDEN_CLASS);
+  const statisticComponent = new Statistic(mainFilmsData);
+  statisticContainer.appendChild(statisticComponent.render());
+};
+
+// statisticButton.addEventListener(`click`, showStatistic);
+
+showStatistic();

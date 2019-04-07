@@ -44,50 +44,7 @@ export default () => {
       date: moment()
     }
   ],
-  isAnimate: true,
-  ratings: [
-    {
-      number: 1,
-      isChecked: false
-    },
-    {
-      number: 2,
-      isChecked: false
-    },
-    {
-      number: 3,
-      isChecked: false
-    },
-    {
-      number: 4,
-      isChecked: false
-    },
-    {
-      number: 5,
-      isChecked: false
-    },
-    {
-      number: 6,
-      isChecked: false
-    },
-    {
-      number: 7,
-      isChecked: false
-    },
-    {
-      number: 8,
-      isChecked: false
-    },
-    {
-      number: 9,
-      isChecked: false
-    },
-    {
-      number: 10,
-      isChecked: false
-    }
-  ],
-  userRating: 0,
+  userRating: null,
   isWatchList: getRandomInteger(0, 1),
   isWatched: getRandomInteger(0, 1),
   isFavorite: getRandomInteger(0, 1),
