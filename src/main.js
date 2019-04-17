@@ -110,7 +110,6 @@ const renderFilms = (films, container) => {
       };
     };
 
-
     container.appendChild(filmComponent.render());
   });
 };
@@ -121,11 +120,9 @@ renderFilms(mostCommentedFilmsData, mostCommentedContainer);
 
 const showStatistic = () => {
   statisticContainer.innerHTML = ``;
-  // filmsWrapper.classList.add(HIDDEN_CLASS);
   const statisticComponent = new Statistic(mainFilmsData);
   statisticContainer.appendChild(statisticComponent.render());
 };
 
-// statisticButton.addEventListener(`click`, showStatistic);
 
 showStatistic();
